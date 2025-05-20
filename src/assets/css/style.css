@@ -1,0 +1,33 @@
+/* src/assets/styles/style.css */
+html, body {
+    height: 100%;
+    margin: 0%;
+    padding: 0px 0px 0px 0px;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    background-color: #0c0548;
+  }
+  
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Apenas para páginas que precisam ocupar toda a altura */
+    box-sizing: border-box;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .app-name {
+    color: white;
+    font-size: 24px;
+  }
+  

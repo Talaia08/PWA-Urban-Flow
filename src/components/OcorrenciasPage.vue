@@ -1,0 +1,373 @@
+<template>
+  <div class="ocorrencias-page">
+    <!-- Top Box -->
+    <div class="top-box">
+      <div class="header">
+          <div class="logo"></div>
+          <h1 class="welcome-message">Ocorrências</h1>        
+      </div>
+    </div>
+
+    <!-- Lista de Ocorrências -->
+    <div class="ocorrencias-list">
+      <div
+        v-for="ocorrencia in ocorrencias"
+        :key="ocorrencia.id"
+        class="ocorrencia-card"
+      >
+        <!-- Cabeçalho da Ocorrência -->
+        <div class="card-header" @click="toggleOcorrencia(ocorrencia.id)">
+          <div class="card-content">
+            <img :src="getIcon(ocorrencia.estadoOcorrencia)" class="icon" />
+            <span>Ocorrência {{ ocorrencia.id }}</span>
+            <span class="arrow" :class="{ open: ocorrenciaAberta === ocorrencia.id }">›</span>
+          </div>
+        </div>
+
+        <!-- Detalhes da Ocorrência (Expandido) -->
+        <div
+          v-if="ocorrenciaAberta === ocorrencia.id"
+          class="card-details"
+        >
+          <p><strong>Data:</strong> {{ ocorrencia.dataHora }}</p>
+          <p><strong>Localização:</strong> {{ ocorrencia.localizacao }}</p>
+          <p><strong>Descrição do Utilizador:</strong> {{ ocorrencia.descricao }}</p>
+          <p v-if="ocorrencia.ficheiro">
+            <strong>Foto/Vídeo:</strong>
+            <button class="btn-open" @click="abrirModal(ocorrencias.indexOf(ocorrencia))">Abrir</button>
+          </p>
+          <p v-else>
+            <strong>Foto/Vídeo:</strong> Não disponível
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Imagens -->
+    <div v-if="mostrarModal" class="modal-overlay" @click.self="fecharModal">
+      <div class="modal-content">
+        <button class="modal-arrow left" @click="imagemAnterior">‹</button>
+        <img :src="imagemAtual" class="modal-image" alt="Imagem da Ocorrência" />
+        <button class="modal-arrow right" @click="proximaImagem">›</button>
+        <button class="modal-close" @click="fecharModal">×</button>
+      </div>
+    </div>
+
+    <!-- Footer Menu -->
+    <div class="footer-menu">
+      <router-link to="/" class="menu-item">
+        <img src="@/assets/images/HomePageIcon.png" class="menu-icon" alt="Home" />
+      </router-link>
+      <router-link to="/auditorias" class="menu-item active">
+        <img src="@/assets/images/ocorrencia.png" class="menu-icon" alt="Ocorrencias" />
+      </router-link>
+      <router-link to="/perfil" class="menu-item">
+        <img src="@/assets/images/ProfileIconMenu.png" class="menu-icon" alt="Perfil" />
+      </router-link>
+      <router-link to="/notificacoes" class="menu-item">
+        <img src="@/assets/images/NotificationIcon.png" class="menu-icon" alt="Notificacoes" />
+      </router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'OcorrenciasPage',
+  data() {
+    return {
+      ocorrencias: [], // Lista de ocorrências
+      ocorrenciaAberta: null, // ID da ocorrência atualmente aberta
+      mostrarModal: false, // Controle do modal
+      indiceImagemAtual: 0, // Índice da imagem atual no modal
+      imagensAtuais: [],
+    };
+  },
+  computed: {
+    imagemAtual() {
+      return this.imagensAtuais[this.indiceImagemAtual];
+    },
+  },
+  methods: {
+    toggleOcorrencia(id) {
+      // Alterna o estado da ocorrência aberta
+      this.ocorrenciaAberta = this.ocorrenciaAberta === id ? null : id;
+    },
+    abrirModal(indiceOcorrencia) {
+      // Abre o modal com as imagens da ocorrência
+      this.imagensAtuais = this.ocorrencias[indiceOcorrencia].ficheiro || [];
+      this.indiceImagemAtual = 0;
+      this.mostrarModal = true;
+    },
+    fecharModal() {
+      // Fecha o modal
+      this.mostrarModal = false;
+      this.imagensAtuais = [];
+      this.indiceImagemAtual = 0;
+    },
+    proximaImagem() {
+      // Navega para a próxima imagem
+      if (this.indiceImagemAtual < this.imagensAtuais.length - 1) {
+        this.indiceImagemAtual++;
+      }
+    },
+    imagemAnterior() {
+      // Navega para a imagem anterior
+      if (this.indiceImagemAtual > 0) {
+        this.indiceImagemAtual--;
+      }
+    },
+    getIcon(estado) {
+      switch (estado) {
+        case 'Por Resolver':
+          return require('@/assets/images/registada.png'); // Ícone para "Por Resolver"
+        case 'Em andamento':
+          return require ('@/assets/images/andamento.png'); // Ícone para "Em andamento"
+        case 'Resolvida':
+          return require ('@/assets/images/resolvida.png'); // Ícone para "Resolvida"
+        default:
+          return '@/assets/images/star.png'; // Ícone padrão
+      }
+    },
+    getStatusText(estado) {
+      switch (estado) {
+        case 'Por Resolver':
+          return 'Por Resolver!';
+        case 'Em andamento':
+          return 'Em Resolução';
+        case 'Resolvida':
+          return 'Resolvida';
+        default:
+          return 'Estado desconhecido';
+      }
+    },
+  },
+  mounted() {
+    // Carrega as ocorrências do Local Storage
+    const armazenadas = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    this.ocorrencias = armazenadas;
+  },
+};
+</script>
+
+<style scoped>
+/* Página de Ocorrências */
+.ocorrencias-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f6f6f6;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* Top Box */
+.top-box {
+  width: 101vw;
+  height: 160px;
+  background: #0C0548 ;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 60px;
+}
+
+.top-box .header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 70px;
+}
+
+.top-box .logo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: url('@/assets/images/LogoUFpwa.png') lightgray 50% / cover no-repeat;
+  margin-bottom: 10px;
+}
+
+.welcome-message {
+  font-size: 1.5em;
+  color: white;
+  margin: 0px 0;
+  margin-top: 10px;
+}
+
+.arrow-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.register-link {
+  text-decoration: none;
+}
+
+/* Lista de Ocorrências */
+.ocorrencias-list {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px 1px;
+}
+
+.ocorrencia-card {
+  background-color: white;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #0c0548;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  cursor: pointer;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  object-fit: contain;
+  display: block;
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 20px;
+  color: #888;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(90deg);
+}
+
+.card-details {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.btn-open {
+  background-color: #0c0548;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-open:hover {
+  background-color: #1c0b80;
+}
+
+/* Footer */
+.footer-menu {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 0;
+  background-color: white;
+  border-top: 1px solid #ccc;
+  position: fixed;
+  bottom: 0;
+}
+
+.footer-menu .menu-item {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-menu .menu-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.footer-menu .active .menu-icon {
+  filter: brightness(1.5);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-image {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+}
+
+.modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.modal-arrow.left {
+  left: 10px;
+}
+
+.modal-arrow.right {
+  right: 10px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+}
+</style>
