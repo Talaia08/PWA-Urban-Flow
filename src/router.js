@@ -49,16 +49,25 @@ const router = createRouter({
 // Guard global para redirecionar com base no tipo de usuário
 router.beforeEach((to, from, next) => {
   const userType = localStorage.getItem('userType'); // 'perito' ou 'cliente'
-
-  // Se o usuário tentar acessar a PrimeiraPagina após login, redireciona para a página correta
-  if (to.path === '/' && userType) {
-    if (userType === 'perito') {
-      next('/inicio-peritos'); // Redireciona para a página dos peritos
+  if (userType !== null){
+    // Se o usuário tentar acessar a PrimeiraPagina após login, redireciona para a página correta
+    if (to.path === '/' ) {
+      if (userType === 'perito') {
+        next('/inicio-peritos'); // Redireciona para a página dos peritos
+      } else  if (userType === 'cliente')  {
+        next('/inicio'); // Redireciona para a página dos clientes
+      } else {
+        localStorage.removeItem('userType'); // 'perito' ou 'cliente'
+        next('/login'); // Redireciona para a página de login
+      }
     } else {
-      next('/inicio'); // Redireciona para a página dos clientes
+      next(); // Redireciona para a página de login se não houver userType
     }
+    
+  } else if (to.path !== '/login' ) {
+    next('/login');
   } else {
-    next(); // Permite a navegação para outras rotas
+    next(); // Permite o acesso à página de login
   }
 });
 

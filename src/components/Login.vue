@@ -56,12 +56,13 @@ export default {
 
         // Verifica o tipo
         if (emailsPeritos.includes(email)) {
-          this.$router.push('/inicio-peritos')
+          localStorage.setItem('userType', 'perito')
         } else if (emailsClientes.includes(email)) {
-          this.$router.push('/inicio')
+          localStorage.setItem('userType', 'cliente')
         } else {
           alert('Este email não está autorizado.')
         }
+        this.$router.push('/')
       } catch (erro) {
         console.error("Erro ao fazer login:", erro)
       }

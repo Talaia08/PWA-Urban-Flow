@@ -17,8 +17,10 @@
         <!-- Cabeçalho da Ocorrência -->
         <div class="card-header" @click="toggleOcorrencia(ocorrencia.id)">
           <div class="card-content">
-            <img src="@/assets/images/ocorrencia.png" class="icon" />
-            <span>Ocorrência {{ ocorrencia.id }}</span>
+            <div classe="card-main">
+              <span>Ocorrência {{ ocorrencia.id }}</span>
+              <span class="occurrence-date">{{ ocorrencia.dataHora }}</span>
+            </div>
             <span :class="estadoClasse(ocorrencia.estadoOcorrencia)" class="estado-tag">
               {{ ocorrencia.estadoOcorrencia }}
             </span>
@@ -141,13 +143,13 @@ export default {
 
 <style scoped>
 .ocorrencias-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f6f6f6;
-    min-height: 100vh;
-    width: 100%;
-    padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f6f6f6;
+  min-height: 100vh;
+  width: 100%;
+  padding-bottom: 100px;
 }
 
 .top-box {
@@ -186,43 +188,6 @@ export default {
   margin-top: 10px;
 }
 
-.register-box {
-  background: white;
-  padding: 40px 70px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  text-align: center;
-}
-
-.register-box span{
-  font-size: 20px
-}
-
-.register-box img{
-  width: 30px;
-  height: 32px;
-  flex-shrink: 0;
-}
-
-.register-button {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  color: #0c0548;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.arrow-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.register-link {
-  text-decoration: none;
-}
-
 .summary-content {
   display: inline-block;
   background: white;
@@ -247,40 +212,43 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
 .card-content {
   display: flex;
   align-items: center;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%
 }
 
-.icon {
-  width: 30px;
-  height: 30px;
+.card-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+
+.occurrence-date {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+  margin-bottom: 2px;
 }
 
 .estado-tag {
-  padding: 5px 10px;
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
   font-size: 12px;
-  border-radius: 9999px;
-  font-weight: 600;
+  font-weight: bold;
+  margin-left: 90px;
+  margin-bottom: 2px;
+  margin-right: 15px;
+  color: #333;
+  background: #eee;
+  white-space: nowrap;
 }
 
-.estado-vermelho {
-  background-color: #fdecea;
-  color: #d93025;
-}
-
-.estado-amarelo {
-  background-color: #fff8e1;
-  color: #f9a825;
-}
 
 .estado-verde {
   background-color: #e6f4ea;

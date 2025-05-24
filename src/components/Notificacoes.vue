@@ -66,9 +66,12 @@ export default {
   },
   mounted() {
     const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas')) || [];
 
     // Gerar notificações com base no estado das ocorrências
-    this.notificacoes = ocorrencias.map((ocorrencia) => {
+    this.notificacoes = ocorrencias
+      .filter(ocorrencia => !apagadas.includes(ocorrencia.id))
+      .map((ocorrencia) => {
       let mensagem = '';
       let icon = '';
       let estado = '';
@@ -130,8 +133,10 @@ export default {
       this.swipingIdx = null;
     },
     apagarNotificacao(idx) {
+      const apagadas = JSON.parse(localStorage.getItem('notificacoesApagadas')) || [];
+      apagadas.push(this.notificacoes[idx].id);
+      localStorage.setItem('notificacoesApagadas', JSON.stringify(apagadas));
       this.notificacoes.splice(idx, 1);
-      localStorage.setItem('notificacoes', JSON.stringify(this.notificacoes));
     },
   },
 };

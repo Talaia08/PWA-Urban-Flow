@@ -9,38 +9,64 @@
       </div>
 
       <div class="occurrences-list" v-if="ultimasOcorrencias.length > 0">
-        <router-link
+        <div
           v-for="ocorrencia in ultimasOcorrencias"
           :key="ocorrencia.id"
-          :to="`/ocorrencia/${ocorrencia.id}`"
           class="occurrence-item-link"
         >
           <div class="occurrence-item">
-            <div class="occurrence-icon">
-              <img
-                :src="getIcon(ocorrencia.estadoOcorrencia)"
-                alt="Estado"
-                class="status-icon"
-              />
+            <div class="occurrence-main">
+              <strong>{{ ocorrencia.tipo }}</strong>
+              <span class="occurrence-date">{{ ocorrencia.dataHora }}</span>
             </div>
-            <div class="occurrence-info">
-              <strong>Ocorrência {{ ocorrencia.id }}</strong>
-              <div class="occurrence-status-container">
-                <span>{{ getStatusText(ocorrencia.estadoOcorrencia) }}</span>
+            <span :class="estadoClasse(ocorrencia.estadoOcorrencia)">
+              {{ getStatusText(ocorrencia.estadoOcorrencia) }}
+            </span>
+            <span
+              class="arrow"
+              :class="{ open: ocorrenciaAberta === ocorrencia.id }"
+              @click.stop="toggleOcorrencia(ocorrencia.id)"
+              style="cursor: pointer;"
+            >›</span>
+
+            <!-- Detalhes da Ocorrência (Expandido) DENTRO do card -->
+            <div
+              v-if="ocorrenciaAberta === ocorrencia.id"
+              class="card-details"
+              style="width: 100%;"
+            >
+              <p><strong>Localização:</strong> {{ ocorrencia.localizacao }}</p>
+              <p><strong>Descrição do Utilizador:</strong> {{ ocorrencia.descricao }}</p>
+              <div v-if="Array.isArray(ocorrencia.ficheiro) && ocorrencia.ficheiro.length">
+                <div class="detalhe-imagens">
+                <span class="foto-label"><strong>Foto/Vídeo:</strong></span>
+                  <img
+                    v-for="(img, idx) in ocorrencia.ficheiro.filter(f => !!f)"
+                    :key="idx"
+                    :src="img"
+                    alt="Foto da ocorrência"
+                    class="foto-ocorrencia"
+                  />
+                </div>
+              </div>
+              <div v-else-if="ocorrencia.ficheiro">
+                <div class="detalhe-imagens">
+                <span class="foto-label"><strong>Foto/Vídeo:</strong></span>
+                  <img
+                    :src="ocorrencia.ficheiro"
+                    alt="Foto da ocorrência"
+                    class="foto-ocorrencia"
+                  />
+                </div>
+              </div>
+              <div v-else>
+                <span class="foto-label"><strong>Foto/Vídeo:</strong> Não disponível</span>
               </div>
             </div>
-            <div class="occurrence-arrow">
-              <span class="arrow">›</span>
-            </div>
           </div>
-        </router-link>
+        </div>
       </div>
 
-      <router-link to="/registar-ocorrencia" class="register-button-link">
-        <button class="register-button">Registar Ocorrência</button>
-      </router-link>
-
-      <!-- Estrelas + Avalie-nos -->
       <div
         v-if="!avaliacaoFeita"
         class="avaliacao-preview"
@@ -53,6 +79,14 @@
         </div>
         <p class="avaliar-texto">Avalie-nos</p>
       </div>
+
+
+      <router-link to="/registar-ocorrencia" class="register-button-link">
+        <button class="register-button">Registar Ocorrência</button>
+      </router-link>
+
+      <!-- Estrelas + Avalie-nos -->
+      
     
 
     <div class="footer-menu">
@@ -82,6 +116,7 @@ export default {
       profile: {},
       nomeUtilizador: '',
       avaliacaoFeita: false,
+      ocorrenciaAberta: null,
     };
   },
   mounted() {
@@ -119,6 +154,24 @@ export default {
       alert('Ocorrência criada com sucesso!');
     },
 
+    toggleOcorrencia(id) {
+      this.ocorrenciaAberta = this.ocorrenciaAberta === id ? null : id;
+    },
+
+    estadoClasse(estado) {
+    switch ((estado || '').toLowerCase()) {
+      case 'por resolver':
+        return 'estado-tag estado-vermelho';
+      case 'em andamento':
+      case 'em resolução':
+        return 'estado-tag estado-amarelo';
+      case 'resolvida':
+        return 'estado-tag estado-verde';
+      default:
+        return 'estado-tag';
+    }
+  },
+
     getIcon(estado) {
       switch (estado) {
         case 'Por Resolver':
@@ -149,18 +202,13 @@ export default {
 
 <style scoped>
 .home-container {
-  background:#ffffff ;
-  color: white;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  justify-content:space-between;
   align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
+  background-color: #f6f6f6;
+  min-height: 100vh;
   width: 100%;
-  margin-bottom: 20px;
+  padding-bottom: 120px;
 }
 
 .top-box {
@@ -221,65 +269,103 @@ export default {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid #ccc;
+  position: relative;
+  flex-wrap: wrap; /* permite que os detalhes fiquem em baixo */
 }
 
-.occurrence-icon {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
-  max-width: 32px;
-  max-height: 32px;
-  object-fit: contain;
-  display: block;
-}
-
-.status-icon {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
-  max-width: 32px;
-  max-height: 32px;
-  object-fit: contain;
-  display: block;
-}
-
-.occurrence-info {
-  flex-grow: 1;
-  text-align: left;
-}
-
-.occurrence-info strong {
+.occurrence-main strong {
   display: block;
   font-size: 14px;
   margin-bottom: 5px;
 }
 
-.occurrence-status-container {
+.occurrence-main {
   display: flex;
-  align-items: center;
-  gap: 5px;
+  flex-direction: column;
+  flex: 1;
+}
+
+.occurrence-date {
+  display: block;
   font-size: 12px;
-  color: #666;
-}
-
-.occurrence-arrow {
-  font-size: 18px;
   color: #888;
+  margin-top: 5px;
+  margin-bottom: 2px;
 }
 
-
-.pending {
-  background-color: red;
+.estado-tag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: auto;
+  margin-bottom: 2px;
+  margin-right: 15px;
+  color: #333;
+  background: #eee;
+  white-space: nowrap;
 }
 
-.resolving {
-  background-color: yellow;
+.estado-vermelho {
+  background: #ffe5e5;
+  color: #d32f2f;
 }
 
-.enviada {
-  background-color: green;
+.estado-amarelo {
+  background: #fff8e1;
+  color: #fbc02d;
+}
+
+.estado-verde {
+  background: #e0f7fa;
+  color: #34a853;
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 20px;
+  color: #888;
+  transform: rotate(0deg);
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(90deg);
+}
+
+.card-details {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.foto-label {
+  display: block;
+  margin-bottom: 4px;
+  text-align: left;
+  width: 100%;
+}
+
+.detalhe-imagens {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.foto-ocorrencia {
+  display: block;
+  max-width: 120px;
+  max-height: 90px;
+  width: auto;         /* Não força a ocupar 100% do container */
+  height: auto;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  object-fit: contain; /* Mostra a imagem inteira, sem cortar */
+  background: #f6f6f6; /* Opcional: fundo claro para imagens pequenas */
 }
 
 .register-button {
@@ -290,8 +376,7 @@ export default {
   padding: 15px 30px;
   font-size: 1em;
   font-weight: bold;
-  margin-top: 10px;
-  margin-bottom: 70px;
+  margin-bottom: 90px;
   cursor: pointer;
   width: 90%;
   max-width: 400px;
@@ -302,7 +387,7 @@ export default {
 }
 
 .register-button-link {
-  margin-top: auto;
+  margin-top: 0px;
   text-decoration: none;
   width: 100%;
   max-width: 400px;
@@ -311,8 +396,8 @@ export default {
 }
 
 .avaliacao-preview {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin-top: 80px;
+  margin-bottom: 0px;
   text-align: center;
   cursor: pointer;
 }

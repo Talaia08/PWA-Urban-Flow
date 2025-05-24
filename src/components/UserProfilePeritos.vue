@@ -14,7 +14,7 @@
     </div>
     <div class="profile-actions">
       <router-link to="/editar-perfil-perito" class="btn-edit">Editar Perfil</router-link>
-      <router-link to="/login" class="btn-logout">Terminar Sessão</router-link>
+      <button class="btn-logout" @click="logout">Terminar Sessão</button>
     </div>
     <!-- Footer Menu -->
     <div class="footer-menu">
@@ -58,6 +58,10 @@ export default {
         this.profileP = JSON.parse(savedProfile);
       }
     },
+    logout() {
+      localStorage.removeItem('userType');
+      this.$router.push('/login');
+    }
   },
   mounted() {
     this.loadProfile(); // Carregar os dados quando o componente for montado
@@ -134,6 +138,8 @@ export default {
   max-width: 300px;
   text-align: center;
   text-decoration: none; /* importante para router-link */
+  line-height: normal;      /* Garante altura de linha igual */
+  box-sizing: border-box;
 }
 
 .btn-edit:hover, .btn-logout:hover {

@@ -16,14 +16,16 @@
         >
           <!-- Cabeçalho da Ocorrência -->
           <div class="card-header" @click="toggleOcorrencia(ocorrencia.id)">
-            <div class="card-content">
-              <img src="@/assets/images/ocorrencia.png" class="icon" />
+            <div class="card-content"> 
+              <div class="card-main">         
               <span>Ocorrência {{ ocorrencia.id }}</span>
+              <span class="occurrence-date">{{ ocorrencia.dataHora }}</span>
+              </div>
               <span :class="estadoClasse(ocorrencia.estadoOcorrencia)" class="estado-tag">
                 {{ getStatusText(ocorrencia.estadoOcorrencia) }}
               </span>
-              <span class="arrow" :class="{ open: ocorrenciaAberta === ocorrencia.id }">›</span>
-            </div>
+              <span class="arrow" :class="{ open: ocorrenciaAberta === ocorrencia.id }">›</span> 
+              </div>             
           </div>
 
           <!-- Detalhes da Ocorrência (Expandido) -->
@@ -48,12 +50,6 @@
                   @click="$router.push(`/relatorio/${ocorrencia.id}`)"
                 >
                   Criar Relatório
-                </button>
-                <button
-                  @click.stop="alterarEstado(ocorrencia, 'Resolvida')"
-                  class="btn-secondary1"
-                >
-                  Marcar como Resolvida
                 </button>
               </div>
             </div>
@@ -195,16 +191,13 @@ export default {
 
 <style scoped>
 .home-container {
-  background: #ffffff;
-  color: black;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  padding: 0 20px;
-  box-sizing: border-box;
+  background-color: #f6f6f6;
+  min-height: 100vh;
   width: 100%;
+  padding-bottom: 100px;
 }
 
 .top-box {
@@ -286,34 +279,48 @@ export default {
 .card-content {
   display: flex;
   align-items: center;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%
 }
 
-.icon {
-  width: 30px;
-  height: 30px;
+.card-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+
+.occurrence-date {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+  margin-bottom: 2px;
 }
 
 .estado-tag {
-  padding: 5px 10px;
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
   font-size: 12px;
-  border-radius: 9999px;
-  font-weight: 600;
+  font-weight: bold;
+  margin-left: 10px;
+  margin-bottom: 2px;
+  margin-right: 15px;
+  color: #333;
+  background: #eee;
+  white-space: nowrap;
 }
 
 .estado-vermelho {
-  background-color: #fdecea;
-  color: #d93025;
+  background: #ffe5e5;
+  color: #d32f2f;
 }
 
 .estado-amarelo {
-  background-color: #fff8e1;
-  color: #f9a825;
-}
-
-.estado-verde {
-  background-color: #e6f4ea;
-  color: #34a853;
+  background: #fff8e1;
+  color: #fbc02d;
 }
 
 .card-details {
@@ -340,36 +347,8 @@ export default {
   margin-bottom: 5px;
 }
 
-.btn-secondary {
-  background-color: #ffffff;
-  color: black;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.btn-secondary1 {
-  background-color: #ffffff;
-  color: black;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 100%;
-}
-
 .btn-primary:hover {
   background-color: #0C0548;
-}
-
-.btn-secondary:hover {
-  background-color: #f4c542;
-}
-
-.btn-secondary1:hover {
-  background-color:rgb(9, 184, 9);
 }
 
 .arrow {
