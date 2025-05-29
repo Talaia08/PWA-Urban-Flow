@@ -7,6 +7,7 @@ import AuditoriasPage from './components/AuditoriasPeritos.vue';
 import UserProfilePeritos from './components/UserProfilePeritos.vue';
 import EditarPerfilPeritos from './components/EditarPerfilPeritos.vue';
 import RelatorioPage from './components/Relatorio.vue';
+import AuditoriaBOPage from './components/Auditoria.vue';
 import VisualizarRelatorio from './components/VisualizarRelatorio.vue';
 import NotificacoesView from './components/NotificacoesPeritos.vue';
 import InicioPage from './components/Inicio.vue';
@@ -28,6 +29,7 @@ const routes = [
   { path: '/perfil-perito', component: UserProfilePeritos },
   { path: '/editar-perfil-perito', component: EditarPerfilPeritos },
   { path: '/relatorio/:id', component: RelatorioPage },
+  { path: '/auditoria/:id', component: AuditoriaBOPage },
   { path: '/visualizar-relatorio/:id', component: VisualizarRelatorio },
   { path: '/notificacoes-perito', component: NotificacoesView },
   { path: '/inicio', component: InicioPage },

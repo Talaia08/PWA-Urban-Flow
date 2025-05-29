@@ -34,7 +34,12 @@
 
             <div class="acoes">
               <div v-if="ocorrencia.estadoOcorrencia === 'Por Resolver'">
-                <button class="btn-primary">Abrir Auditoria</button>
+                <button
+                  class="btn-primary"
+                  @click="$router.push(`/auditoria/${ocorrencia.id}`)"
+                >
+                  Abrir Auditoria
+                </button>
                 <button
                   class="btn-primary"
                   @click="$router.push(`/relatorio/${ocorrencia.id}`)"
@@ -44,7 +49,12 @@
               </div>
 
               <div v-else-if="ocorrencia.estadoOcorrencia === 'Em andamento'">
-                <button class="btn-primary">Abrir Auditoria</button>
+                <button
+                  class="btn-primary"
+                  @click="$router.push(`/auditoria/${ocorrencia.id}`)"
+                >
+                  Abrir Auditoria
+                </button>
                 <button
                   class="btn-primary"
                   @click="$router.push(`/relatorio/${ocorrencia.id}`)"

@@ -4,7 +4,7 @@
     <div class="top-box">
       <div class="header">
         <div class="logo"></div>
-        <h1 class="welcome-message">Relatório</h1>        
+        <h1 class="welcome-message">Auditoria</h1>        
       </div>
     </div>
     <!-- Etapa 1: Informações da Ocorrência -->
@@ -33,71 +33,25 @@
         <label>Descrição do Utilizador *</label>
         <textarea :value="ocorrencia.descricao"></textarea>
       </div>
-      <div class="alert box">
-        <p>
-          <strong>Atenção</strong> <br>Verifique se os dados acima estão corretos em relação à ocorrência.
-          Caso alguma informação esteja incorreta, corrija antes de prosseguir com o relatório.
-        </p>
+      <div class="form-group box">
+        <label>Duração Estimada</label>
+        <div>
+            {{ ocorrencia.duracaoEstimada || 'Não disponível' }}
+        </div>
       </div>
-      <div class="buttons">
-        <button @click="guardarProgresso" class="btn-secondary">Guardar</button>
-        <button @click="irParaProximaEtapa" class="btn-secondary1">Seguinte</button>
+        <div class="form-group box">
+        <label>Materiais Previstos</label>
+        <div>
+          <ul v-if="ocorrencia.materiaisPrevistos && ocorrencia.materiaisPrevistos.length">
+            <li v-for="(mat, idx) in ocorrencia.materiaisPrevistos" :key="idx">
+                {{ mat.nome }} - {{ mat.quantidade }}
+            </li>
+          </ul>
+          <span v-else>Não disponível</span>
+        </div>
       </div>
     </div>
 
-    <!-- Etapa 2: Preenchimento do Relatório -->
-    <div v-else-if="etapa === 2" class="etapa">
-      <div class="form-group box">
-        <label>Data Criação do Relatório *</label>
-        <input type="date" v-model="relatorio.dataCriacao" />
-      </div>
-      <div class="form-group box">
-        <label>Duração da Resolução *</label>
-        <input type="text" v-model="relatorio.duracao" placeholder="A sua resposta" />
-      </div>
-      <div class="form-group box">
-        <label>Descrição da Ocorrência *</label>
-        <textarea v-model="relatorio.descricaoOcorrencia" placeholder="A sua resposta"></textarea>
-      </div>
-      <div class="form-group box">
-        <label>Materiais Utilizados *</label>
-        <ul class="materiais-list">
-            <li v-for="(material, index) in relatorio.materiais" :key="index" class="material-item">
-            <span>{{ material.nome }}</span>
-            <div class="quantidade-controle">
-                <button @click="diminuirQuantidade(index)" class="btn-quantidade">-</button>
-                <span>{{ material.quantidade }}</span>
-                <button @click="aumentarQuantidade(index)" class="btn-quantidade">+</button>
-            </div>
-            <button @click="removerMaterial(index)" class="btn-lixo">
-                🗑️
-            </button>
-            </li>
-        </ul>
-        <div class="adicionar-material">
-            <input
-            type="text"
-            v-model="novoMaterial"
-            placeholder="Adicionar novo material"
-            class="input-material"
-            />
-            <button @click="adicionarMaterial" class="btn-adicionar">Adicionar</button>
-        </div>
-      </div>
-      <div class="form-group box">
-        <label>Descrição do Procedimento *</label>
-        <textarea v-model="relatorio.procedimento" placeholder="A sua resposta"></textarea>
-      </div>
-      <div class="form-group box">
-        <label>Fotos / Vídeos *</label>
-        <input type="file" multiple @change="adicionarArquivos" />
-      </div>
-      <div class="buttons">
-        <button @click="voltarEtapaAnterior" class="btn-secondary1">Anterior</button>
-        <button @click="guardarProgresso" class="btn-secondary">Guardar</button>
-        <button @click="enviarRelatorio" class="btn-primary">Enviar</button>
-      </div>
-    </div>
 
     <!-- Footer Menu -->
     <div class="footer-menu">
@@ -119,33 +73,16 @@
 
 <script>
 export default {
-  name: 'RelatorioPage',
+  name: 'AuditoriaBOPage',
   data() {
     return {
-      etapa: 1, // Controla a etapa atual (1 ou 2)
       ocorrencia: {}, // Dados da ocorrência carregados do localStorage
       profileP: {},
-      relatorio: {
-        dataCriacao: '',
-        duracao: '',
-        descricaoOcorrencia: '',
-        materiais: [
-            {nome: 'Martelo', quantidade: 0 },
-            {nome: 'Parafusos', quantidade: 0 },
-            {nome: 'Condensador', quantidade: 0 },
-            {nome: 'Chave de fendas', quantidade: 0 },
-            {nome: 'Alicate', quantidade: 0 },
-            {nome: 'Rolo de Cabo Elétrico', quantidade: 0 },
-            {nome: 'Fita Métrica', quantidade: 0 },
-            {nome: 'Chave Inglesa', quantidade: 0 },
-            {nome: 'Anilhas', quantidade: 0 },
-            {nome: 'Vidro', quantidade: 0 },
-        ],
-        procedimento: '',
-        arquivos: [],
-      },
-    };
-  },
+      relatorio: null,
+      etapa: 1
+      };
+    },
+
   mounted() {
     // Carrega os dados da ocorrência com base no ID da rota
     const id = this.$route.params.id;
@@ -156,12 +93,17 @@ export default {
     const profileData = JSON.parse(localStorage.getItem('profileP')) || {};
     this.profileP = profileData;
 
-    // Carrega o relatório salvo, se existir
     const relatorios = JSON.parse(localStorage.getItem('relatorios')) || [];
     const relatorioSalvo = relatorios.find((r) => r.id === parseInt(id));
     if (relatorioSalvo) {
-      this.relatorio = { ...relatorioSalvo };
+    this.relatorio = { ...relatorioSalvo };
+    } else {
+    this.relatorio = null;
     }
+
+    console.log('ID:', id);
+    console.log('Ocorrencia:', this.ocorrencia);
+    console.log('Relatorio:', this.relatorio);
   },
   methods: {
     irParaProximaEtapa() {
@@ -276,12 +218,12 @@ export default {
 
 <style scoped>
 .relatorio-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #CECDDA;
-    min-height: 100vh;
-    padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #CECDDA;
+  min-height: 100vh;
+  padding-bottom: 100px;
 }
 
 .top-box {
@@ -332,12 +274,16 @@ export default {
   
 }
 
-.box {
+.form-group.box {
   background: white;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
   margin-bottom: 15px;
+  width: 90%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .box label {
@@ -363,6 +309,7 @@ export default {
   outline: none;
   border-bottom: 1px solid #4285F4;
 }
+
 
 textarea {
   resize: none;

@@ -1,4 +1,6 @@
 module.exports = {
+  publicPath: '/PWA-Urban-Flow/',
+
   pwa: {
     name: 'Minha PWA',
     themeColor: '#42b983',
