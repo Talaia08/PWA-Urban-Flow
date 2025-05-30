@@ -87,11 +87,16 @@ export default {
     },
 
     enviarOcorrencia() {
+
+      let localizacaoLimpa = this.localizacao.replace(/(latitude|longitude)\s*:?/gi, '').trim();
+
+      localizacaoLimpa = localizacaoLimpa.replace(/\s*,\s*/g, ',').replace(/,+/g, ',');
+
       const novaOcorrencia = {
         id: Math.floor(10000 + Math.random() * 90000),
         tipo: this.tipo,
         descricao: this.descricao,
-        localizacao: this.localizacao,
+        localizacao: localizacaoLimpa,
         dataHora: this.dataHora,
         estado: 'Enviada',
         estadoOcorrencia: 'Por Resolver',
