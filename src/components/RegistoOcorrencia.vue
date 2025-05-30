@@ -103,7 +103,7 @@ export default {
         navigator.geolocation.getCurrentPosition((pos) => {
           const lat = pos.coords.latitude.toFixed(6);
           const lng = pos.coords.longitude.toFixed(6);
-          this.localizacao = `Latitude: ${lat}, Longitude: ${lng}`;
+          this.localizacao = `${lat},${lng}`;
         }, () => {
           alert("Não foi possível obter a localização.");
         });
