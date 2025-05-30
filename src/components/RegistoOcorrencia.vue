@@ -100,11 +100,11 @@ export default {
 
     obterLocalizacao() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(pos) {
+        navigator.geolocation.getCurrentPosition((pos) => {
           const lat = pos.coords.latitude.toFixed(6);
           const lng = pos.coords.longitude.toFixed(6);
-          document.getElementById("novo-localizacao").value = `${lat},${lng}`;
-        }, function() {
+          this.localizacao = `Latitude: ${lat}, Longitude: ${lng}`;
+        }, () => {
           alert("Não foi possível obter a localização.");
         });
       } else {
