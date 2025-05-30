@@ -99,22 +99,17 @@ export default {
     },
 
     obterLocalizacao() {
-      if (!navigator.geolocation) {
-        alert('Geolocalização não é suportada pelo seu navegador.');
-        return;
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          const lat = pos.coords.latitude.toFixed(6);
+          const lng = pos.coords.longitude.toFixed(6);
+          document.getElementById("novo-localizacao").value = `${lat},${lng}`;
+        }, function() {
+          alert("Não foi possível obter a localização.");
+        });
+      } else {
+        alert("Geolocalização não suportada neste navegador.");
       }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          this.localizacao = `Latitude: ${lat.toFixed(5)}, Longitude: ${lng.toFixed(5)}`;
-          window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
-        },
-        () => {
-          alert('Não foi possível obter a sua localização.');
-        }
-      );
     }
   }
 };
