@@ -19,7 +19,14 @@
       <input type="text" placeholder="Descrição" class="input" v-model="descricao" />
 
       <div class="localizacao-input">
-        <input type="text" placeholder="Localização" class="input" v-model="localizacao" />
+        <input
+          type="text"
+          placeholder="Localização"
+          class="input"
+          v-model="localizacao"
+          readonly
+          autocomplete="off"
+        />
         <button class="geo-button" @click="obterLocalizacao">📍</button>
       </div>
 
