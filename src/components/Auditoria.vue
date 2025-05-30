@@ -1,4 +1,4 @@
-<!-- filepath: c:\UM 3º\PW\PWA-Urban-Flow\PWA Urban Flow\src\components\Relatorio.vue -->
+
 <template>
   <div class="relatorio-page">
     <div class="top-box">
