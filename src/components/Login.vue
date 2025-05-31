@@ -50,19 +50,19 @@ export default {
         // Guardar no localStorage
         localStorage.setItem('email', email)
 
-        // Listas de emails
-        const emailsPeritos = ['josetalaia47@gmail.com', 'perito2@gmail.com']
-        const emailsClientes = ['hugotalaia@gmail.com', 'cliente2@gmail.com']
+        // Vai buscar o array de peritos ao localStorage
+        const peritos = JSON.parse(localStorage.getItem('profileP')) || []
 
-        // Verifica o tipo
-        if (emailsPeritos.includes(email)) {
+        // Verifica se o email está no array de peritos
+        const isPerito = Array.isArray(peritos) && peritos.some(p => p.email === email)
+
+        if (isPerito) {
           localStorage.setItem('userType', 'perito')
-        } else if (emailsClientes.includes(email)) {
-          localStorage.setItem('userType', 'cliente')
+          this.$router.push('/inicio-peritos')
         } else {
-          alert('Este email não está autorizado.')
+          localStorage.setItem('userType', 'cliente')
+          this.$router.push('/inicio')
         }
-        this.$router.push('/')
       } catch (erro) {
         console.error("Erro ao fazer login:", erro)
       }
