@@ -46,6 +46,7 @@
           categorias: this.categorias,
           comentario: this.comentario,
           data: new Date().toISOString(),
+          origem: 'PWA'
         };
         const avaliacoes = JSON.parse(localStorage.getItem('avaliacoes')) || [];
         avaliacoes.push(avaliacao);
