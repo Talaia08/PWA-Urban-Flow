@@ -116,7 +116,7 @@ export default {
         descricao: this.descricao,
         localizacao: localizacaoLimpa,
         dataHora: this.dataHora,
-        estado: 'Enviada',
+        status: 'Pendente',
         estadoOcorrencia: 'Por Resolver',
         ficheiro: this.ficheiroBase64 || null,
       };
