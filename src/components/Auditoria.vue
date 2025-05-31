@@ -84,30 +84,38 @@ export default {
     },
 
   mounted() {
-    // Supondo que o id vem da rota
+    // 1. Recebe o idAuditoria da rota
     const idAuditoria = this.$route.params.idAuditoria;
 
-    // Busca todas as auditorias guardadas
+    // 2. Busca todas as auditorias guardadas
     const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
 
-    // Procura a auditoria certa
-    const auditoria = auditorias.find(a => a.idAuditoria === idAuditoria);
+    // 3. Procura a auditoria certa pelo idAuditoria
+    const auditoria = auditorias.find(a => String(a.idAuditoria) === String(idAuditoria));
 
     if (auditoria) {
-      // Preenche os campos do formulário com os dados da auditoria
+      // 4. Busca a ocorrência associada pelo idOcorrencia da auditoria
+      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+      const ocorrencia = ocorrencias.find(o => String(o.id) === String(auditoria.idOcorrencia));
+
+      // 5. Preenche os campos do formulário
       this.ocorrencia = {
-        id: auditoria.id,
-        tipo: auditoria.tipo,
-        localizacao: auditoria.localizacao,
-        dataHora: auditoria.dataHora,
-        descricao: auditoria.descricao,
-        materiais: auditoria.materiais
-        // ... outros campos que precises
+        id: auditoria.idOcorrencia,
+        tipo: auditoria.tipo || (ocorrencia ? ocorrencia.tipo : ''),
+        localizacao: auditoria.localizacao || (ocorrencia ? ocorrencia.localizacao : ''),
+        dataHora: auditoria.dataHora || (ocorrencia ? ocorrencia.dataHora : ''),
+        descricao: auditoria.descricao || (ocorrencia ? ocorrencia.descricao : ''),
+        duracao: auditoria.duracao || (ocorrencia ? ocorrencia.duracao : ''),
+        materiais: auditoria.materiais || (ocorrencia ? ocorrencia.materiais : []),
+        custo: auditoria.custo,
+        ficheiro: auditoria.ficheiro,
+        estadoOcorrencia: auditoria.estadoOcorrencia,
       };
-      this.profileP = auditoria.profileP;
-      // ... outros campos
+      // Se profileP é array, usa o primeiro nome, senão usa string
+      this.profileP = Array.isArray(auditoria.profileP)
+        ? { name: auditoria.profileP[0] || '' }
+        : { name: auditoria.profileP || '' };
     } else {
-      // Auditoria não encontrada
       alert('Auditoria não encontrada!');
     }
   },
