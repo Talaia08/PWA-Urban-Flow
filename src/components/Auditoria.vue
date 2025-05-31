@@ -96,7 +96,7 @@ export default {
     if (auditoria) {
       // Preenche os campos do formulário com os dados da auditoria
       this.ocorrencia = {
-        id: auditoria.idOcorrencia,
+        id: auditoria.id,
         tipo: auditoria.tipo,
         localizacao: auditoria.localizacao,
         dataHora: auditoria.dataHora,
