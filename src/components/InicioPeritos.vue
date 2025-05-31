@@ -102,20 +102,23 @@ export default {
     const userEmail = localStorage.getItem('email');
 
     // Só mostra ocorrências atribuídas ao perito autenticado
-    this.ocorrencias = armazenadas
-    .filter(o => {
-      if (!o.profileP) return false;
-      // Se for string (email)
-      if (typeof o.profileP === 'string') return o.profileP === userEmail;
+    this.ocorrencias = auditorias
+    .filter(a => {
+      if (!a.profileP) return false;
+      // Se for string (nome ou email)
+      if (typeof a.profileP === 'string') return a.profileP === userEmail;
+      // Se for array (de nomes ou emails)
+      if (Array.isArray(a.profileP)) return a.profileP.includes(userEmail);
       // Se for objeto
-      if (typeof o.profileP === 'object' && !Array.isArray(o.profileP)) return o.profileP.email === userEmail;
-      // Se for array de objetos
-      if (Array.isArray(o.profileP)) return o.profileP.some(p => p.email === userEmail || p === userEmail);
+      if (typeof a.profileP === 'object') return a.profileP.email === userEmail;
       return false;
     })
-    .map((ocorrencia) => ({
-      ...ocorrencia,
-      estadoOcorrencia: ocorrencia.estadoOcorrencia || 'Por Resolver',
+    .map((auditoria) => ({
+      ...auditoria,
+      estadoOcorrencia: auditoria.estadoOcorrencia || 'Por Resolver',
+      descricao: auditoria.descricao,
+      dataHora: auditoria.dataHora,
+      id: auditoria.idOcorrencia // para manter compatibilidade com o resto do código
     }));
 
     const userInfo = JSON.parse(localStorage.getItem('profileP'));
