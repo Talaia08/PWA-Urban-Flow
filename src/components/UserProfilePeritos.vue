@@ -67,7 +67,7 @@ export default {
         this.profileP = {
           name: perito.name || '',
           dob: perito.dob || '',
-          specialty: perito.speciality || '', // Atenção ao nome do campo!
+          specialty: perito.specialty || '', // Atenção ao nome do campo!
           location: perito.location || '',
           phone: perito.phone || '',
           email: perito.email || '',
