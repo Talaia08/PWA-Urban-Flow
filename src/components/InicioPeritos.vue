@@ -103,14 +103,20 @@ export default {
 
     // Só mostra ocorrências atribuídas ao perito autenticado
     this.ocorrencias = armazenadas
-      .filter(o =>
-        o.profileP === userEmail ||
-        (Array.isArray(o.profileP) && o.profileP.includes(userEmail))
-      )
-      .map((ocorrencia) => ({
-        ...ocorrencia,
-        estadoOcorrencia: ocorrencia.estadoOcorrencia || 'Por Resolver',
-      }));
+    .filter(o => {
+      if (!o.profileP) return false;
+      // Se for string (email)
+      if (typeof o.profileP === 'string') return o.profileP === userEmail;
+      // Se for objeto
+      if (typeof o.profileP === 'object' && !Array.isArray(o.profileP)) return o.profileP.email === userEmail;
+      // Se for array de objetos
+      if (Array.isArray(o.profileP)) return o.profileP.some(p => p.email === userEmail || p === userEmail);
+      return false;
+    })
+    .map((ocorrencia) => ({
+      ...ocorrencia,
+      estadoOcorrencia: ocorrencia.estadoOcorrencia || 'Por Resolver',
+    }));
 
     const userInfo = JSON.parse(localStorage.getItem('profileP'));
     if (userInfo && userInfo.name) {
