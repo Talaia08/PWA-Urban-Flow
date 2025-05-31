@@ -36,14 +36,14 @@
       <div class="form-group box">
         <label>Duração Estimada</label>
         <div>
-          {{ auditorias.duracao || 'Não disponível' }}
+          {{ ocorrencia.duracao || 'Não disponível' }}
         </div>
       </div>
       <div class="form-group box">
         <label>Materiais Previstos</label>
         <div>
-          <ul v-if="auditorias.materiais && auditorias.materiais.length">
-            <li v-for="(mat, idx) in auditorias.materiais" :key="idx">
+          <ul v-if="ocorrencia.materiais && ocorrencia.materiais.length">
+            <li v-for="(mat, idx) in ocorrencia.materiais" :key="idx">
               {{ mat.nome }} - {{ mat.quantidade }}
             </li>
           </ul>
@@ -93,15 +93,15 @@ export default {
     // Procura a auditoria certa
     const auditoria = auditorias.find(a => a.idAuditoria === idAuditoria);
 
-    if (auditorias) {
+    if (auditoria) {
       // Preenche os campos do formulário com os dados da auditoria
       this.ocorrencia = {
-        id: auditorias.idOcorrencia,
-        tipo: auditorias.tipo,
-        localizacao: auditorias.localizacao,
-        dataHora: auditorias.dataHora,
-        descricao: auditorias.descricao,
-        materiais: auditorias.materiais
+        id: auditoria.idOcorrencia,
+        tipo: auditoria.tipo,
+        localizacao: auditoria.localizacao,
+        dataHora: auditoria.dataHora,
+        descricao: auditoria.descricao,
+        materiais: auditoria.materiais
         // ... outros campos que precises
       };
       this.profileP = auditoria.profileP;
