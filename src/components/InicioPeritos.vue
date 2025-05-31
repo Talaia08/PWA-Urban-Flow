@@ -99,10 +99,18 @@ export default {
   },
   mounted() {
     const armazenadas = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-    this.ocorrencias = armazenadas.map((ocorrencia) => ({
-      ...ocorrencia,
-      estadoOcorrencia: ocorrencia.estadoOcorrencia || 'Por Resolver', // Garante que o estado esteja definido
-    }));
+    const userEmail = localStorage.getItem('email');
+
+    // Só mostra ocorrências atribuídas ao perito autenticado
+    this.ocorrencias = armazenadas
+      .filter(o =>
+        o.profileP === userEmail ||
+        (Array.isArray(o.profileP) && o.profileP.includes(userEmail))
+      )
+      .map((ocorrencia) => ({
+        ...ocorrencia,
+        estadoOcorrencia: ocorrencia.estadoOcorrencia || 'Por Resolver',
+      }));
 
     const userInfo = JSON.parse(localStorage.getItem('profileP'));
     if (userInfo && userInfo.name) {
