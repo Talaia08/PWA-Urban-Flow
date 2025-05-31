@@ -124,6 +124,10 @@ export default {
       if (this.tipo === 'Atrasos') {
         novaOcorrencia.linha = this.linha;
         novaOcorrencia.tempo = this.tempo;
+
+        const atrasos = JSON.parse(localStorage.getItem('atrasos')) || [];
+        atrasos.push({ ...novaOcorrencia }); // guarda todos os parâmetros
+        localStorage.setItem('atrasos', JSON.stringify(atrasos));
       }
 
       const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];

@@ -142,8 +142,13 @@ export default {
     this.ocorrencia = armazenadas.find((o) => o.id === parseInt(id)) || {};
 
     // Carrega os dados do perfil do perito do localStorage
-    const profileData = JSON.parse(localStorage.getItem('profileP')) || {};
-    this.profileP = profileData;
+    const userEmail = localStorage.getItem('email');
+    const peritos = JSON.parse(localStorage.getItem('profileP')) || [];
+    const perito = Array.isArray(peritos)
+      ? peritos.find(p => p.email === userEmail)
+      : peritos;
+
+    this.profileP = perito || {};
 
     // Carrega o relatório salvo, se existir
     const relatorios = JSON.parse(localStorage.getItem('relatorios')) || [];
