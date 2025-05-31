@@ -101,25 +101,30 @@ export default {
     const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
     const userEmail = localStorage.getItem('email');
 
-    // Só mostra ocorrências atribuídas ao perito autenticado
+    // Suporta todos os formatos de profileP
     this.ocorrencias = auditorias
-    .filter(a => {
-      if (!a.profileP) return false;
-      // Se for string (nome ou email)
-      if (typeof a.profileP === 'string') return a.profileP === userEmail;
-      // Se for array (de nomes ou emails)
-      if (Array.isArray(a.profileP)) return a.profileP.includes(userEmail);
-      // Se for objeto
-      if (typeof a.profileP === 'object') return a.profileP.email === userEmail;
-      return false;
-    })
-    .map((auditoria) => ({
-      ...auditoria,
-      estadoOcorrencia: auditoria.estadoOcorrencia || 'Por Resolver',
-      descricao: auditoria.descricao,
-      dataHora: auditoria.dataHora,
-      id: auditoria.idOcorrencia // para manter compatibilidade com o resto do código
-    }));
+      .filter(a => {
+        if (!a.profileP) return false;
+        // Se for string (email)
+        if (typeof a.profileP === 'string') return a.profileP === userEmail;
+        // Se for objeto único
+        if (typeof a.profileP === 'object' && !Array.isArray(a.profileP)) return a.profileP.email === userEmail;
+        // Se for array
+        if (Array.isArray(a.profileP)) {
+          // Array de strings
+          if (typeof a.profileP[0] === 'string') return a.profileP.includes(userEmail);
+          // Array de objetos
+          if (typeof a.profileP[0] === 'object') return a.profileP.some(p => p.email === userEmail);
+        }
+        return false;
+      })
+      .map((auditoria) => ({
+        ...auditoria,
+        estadoOcorrencia: auditoria.estadoOcorrencia || 'Por Resolver',
+        descricao: auditoria.descricao,
+        dataHora: auditoria.dataHora,
+        id: auditoria.idOcorrencia // para manter compatibilidade com o resto do código
+      }));
 
     const userInfo = JSON.parse(localStorage.getItem('profileP'));
     if (userInfo && userInfo.name) {
