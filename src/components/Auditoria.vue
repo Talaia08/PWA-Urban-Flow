@@ -84,14 +84,13 @@ export default {
     },
 
   mounted() {
-    // 1. Recebe o idAuditoria da rota
-    const idAuditoria = this.$route.params.idAuditoria;
-
-    // 2. Busca todas as auditorias guardadas
+    const id = this.$route.params.idAuditoria || this.$route.params.idOcorrencia || this.$route.params.id;
     const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
-
-    // 3. Procura a auditoria certa pelo idAuditoria
-    const auditoria = auditorias.find(a => String(a.idAuditoria) === String(idAuditoria));
+    const auditoria = auditorias.find(a =>
+      String(a.idAuditoria) === String(id) ||
+      String(a.idOcorrencia) === String(id) ||
+      String(a.id) === String(id)
+    );
 
     if (auditoria) {
       // 4. Busca a ocorrência associada pelo idOcorrencia da auditoria
