@@ -228,6 +228,23 @@ export default {
       // Salva a lista atualizada no localStorage
       localStorage.setItem('relatorios', JSON.stringify(relatorios));
 
+      const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
+      const auditoriaIdx = auditorias.findIndex(a => String(a.idOcorrencia) === String(this.ocorrencia.id));
+      if (auditoriaIdx !== -1) {
+        auditorias[auditoriaIdx].relatorioPerito = {
+          dataCriacao: this.relatorio.dataCriacao,
+          duracao: this.relatorio.duracao,
+          descricaoOcorrencia: this.relatorio.descricaoOcorrencia,
+          materiais: this.relatorio.materiais,
+          procedimento: this.relatorio.procedimento,
+          arquivos: this.relatorio.arquivos,
+          perito: this.profileP.name
+        };
+        // Atualiza o estado se quiseres
+        auditorias[auditoriaIdx].estadoOcorrencia = "resolvido";
+        localStorage.setItem('auditorias', JSON.stringify(auditorias));
+      }
+
       // Atualiza o estado da ocorrência para "Resolvida"
       const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
       const ocorrenciaIndex = ocorrencias.findIndex((o) => o.id === this.ocorrencia.id);
