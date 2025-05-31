@@ -126,13 +126,13 @@ export default {
         novaOcorrencia.tempo = this.tempo;
 
         const atrasos = JSON.parse(localStorage.getItem('atrasos')) || [];
-        atrasos.push({ ...novaOcorrencia }); // guarda todos os parâmetros
+        atrasos.push({ ...novaOcorrencia });
         localStorage.setItem('atrasos', JSON.stringify(atrasos));
+      } else {
+        const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+        ocorrencias.push(novaOcorrencia);
+        localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
       }
-
-      const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-      ocorrencias.push(novaOcorrencia);
-      localStorage.setItem('ocorrencias', JSON.stringify(ocorrencias));
 
       this.$router.push('/');
     },
