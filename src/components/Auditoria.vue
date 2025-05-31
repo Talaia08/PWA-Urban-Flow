@@ -36,15 +36,15 @@
       <div class="form-group box">
         <label>Duração Estimada</label>
         <div>
-            {{ ocorrencia.duracaoEstimada || 'Não disponível' }}
+          {{ auditorias.duracao || 'Não disponível' }}
         </div>
       </div>
-        <div class="form-group box">
+      <div class="form-group box">
         <label>Materiais Previstos</label>
         <div>
-          <ul v-if="ocorrencia.materiaisPrevistos && ocorrencia.materiaisPrevistos.length">
-            <li v-for="(mat, idx) in ocorrencia.materiaisPrevistos" :key="idx">
-                {{ mat.nome }} - {{ mat.quantidade }}
+          <ul v-if="auditorias.materiais && auditorias.materiais.length">
+            <li v-for="(mat, idx) in auditorias.materiais" :key="idx">
+              {{ mat.nome }} - {{ mat.quantidade }}
             </li>
           </ul>
           <span v-else>Não disponível</span>
@@ -84,26 +84,32 @@ export default {
     },
 
   mounted() {
-    // Carrega os dados da ocorrência com base no ID da rota
-    const id = this.$route.params.id;
-    const armazenadas = JSON.parse(localStorage.getItem('ocorrencias')) || [];
-    this.ocorrencia = armazenadas.find((o) => o.id === parseInt(id)) || {};
+    // Supondo que o id vem da rota
+    const idAuditoria = this.$route.params.idAuditoria;
 
-    // Carrega os dados do perfil do perito do localStorage
-    const profileData = JSON.parse(localStorage.getItem('profileP')) || {};
-    this.profileP = profileData;
+    // Busca todas as auditorias guardadas
+    const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
 
-    const relatorios = JSON.parse(localStorage.getItem('relatorios')) || [];
-    const relatorioSalvo = relatorios.find((r) => r.id === parseInt(id));
-    if (relatorioSalvo) {
-    this.relatorio = { ...relatorioSalvo };
+    // Procura a auditoria certa
+    const auditoria = auditorias.find(a => a.idAuditoria === idAuditoria);
+
+    if (auditorias) {
+      // Preenche os campos do formulário com os dados da auditoria
+      this.ocorrencia = {
+        id: auditorias.idOcorrencia,
+        tipo: auditorias.tipo,
+        localizacao: auditorias.localizacao,
+        dataHora: auditorias.dataHora,
+        descricao: auditorias.descricao,
+        materiais: auditorias.materiais
+        // ... outros campos que precises
+      };
+      this.profileP = auditoria.profileP;
+      // ... outros campos
     } else {
-    this.relatorio = null;
+      // Auditoria não encontrada
+      alert('Auditoria não encontrada!');
     }
-
-    console.log('ID:', id);
-    console.log('Ocorrencia:', this.ocorrencia);
-    console.log('Relatorio:', this.relatorio);
   },
   methods: {
     irParaProximaEtapa() {

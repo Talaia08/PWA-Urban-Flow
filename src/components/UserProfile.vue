@@ -5,11 +5,11 @@
     </div>
     <div class="form-group">
       <input type="text" class="profile-input" v-model="profile.name" placeholder="Nome Completo" />
-      <input type="text" class="profile-input" v-model="profile.dob" placeholder="Data de Nascimento" />
+      <input type="date" class="profile-input" v-model="profile.dob" placeholder="Data de Nascimento" />
       <input type="text" class="profile-input" v-model="profile.occupation" placeholder="Profissão" />
       <input type="text" class="profile-input" v-model="profile.location" placeholder="Localização" />
       <input type="text" class="profile-input" v-model="profile.phone" placeholder="Telefone" />
-      <input type="text" class="profile-input" v-model="profile.email" placeholder="Email" />
+      <input type="email" class="profile-input" v-model="profile.email" placeholder="Email" />
       <input type="text" class="profile-input" v-model="profile.address" placeholder="Endereço" />
     </div>
     <div class="profile-actions">
