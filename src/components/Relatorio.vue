@@ -151,6 +151,15 @@ export default {
     if (relatorioSalvo) {
       this.relatorio = { ...relatorioSalvo };
     }
+
+    const materiaisDisponiveis = JSON.parse(localStorage.getItem('materiais')) || [];
+    // Só adiciona se ainda não houver materiais no relatório
+    if (!this.relatorio.materiais || this.relatorio.materiais.length === 0) {
+      this.relatorio.materiais = materiaisDisponiveis.map(mat => ({
+        nome: mat.titulo || mat.nome,
+        quantidade: 0 // ou 1, se preferires
+      }));
+    }
   },
   methods: {
     irParaProximaEtapa() {
