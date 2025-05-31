@@ -98,7 +98,6 @@ export default {
     };
   },
   mounted() {
-    mounted() {
       const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
       const userEmail = localStorage.getItem('email');
 
@@ -127,7 +126,6 @@ export default {
         this.profileP = userInfo;
       }
     },
-  },
 
   computed: {
     ocorrenciasPendentes() {
