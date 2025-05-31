@@ -98,7 +98,7 @@ export default {
     };
   },
   mounted() {
-    const auditorias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
+    const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
     const userEmail = localStorage.getItem('email');
 
     // Só mostra ocorrências atribuídas ao perito autenticado
