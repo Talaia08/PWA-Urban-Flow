@@ -12,11 +12,27 @@
         <ul v-if="dropdownAberto" class="dropdown-menu">
           <li @click="selecionarTipo('Paragens')">Paragens</li>
           <li @click="selecionarTipo('Autocarros')">Autocarros</li>
-          <li @click="selecionarTipo('Rotas')">Rotas</li>
+          <li @click="selecionarTipo('Atrasos')">Atrasos</li>
         </ul>
       </div>
 
       <input type="text" placeholder="Descrição" class="input" v-model="descricao" />
+
+      <input
+        v-if="tipo === 'Atrasos'"
+        type="text"
+        class="input"
+        placeholder="Linha do autocarro"
+        v-model="linha"
+      />
+      <input
+        v-if="tipo === 'Atrasos'"
+        type="number"
+        class="input"
+        placeholder="Tempo de atraso (minutos)"
+        v-model="tempo"
+        min="0"
+      />
 
       <div class="localizacao-input">
         <input
@@ -64,6 +80,8 @@ export default {
       dataHora: '',
       ficheiroBase64: null,
       dropdownAberto: false,
+      linha: '',
+      tempo: '',
     };
   },
   methods: {
@@ -102,6 +120,11 @@ export default {
         estadoOcorrencia: 'Por Resolver',
         ficheiro: this.ficheiroBase64 || null,
       };
+
+      if (this.tipo === 'Atrasos') {
+        novaOcorrencia.linha = this.linha;
+        novaOcorrencia.tempo = this.tempo;
+      }
 
       const ocorrencias = JSON.parse(localStorage.getItem('ocorrencias')) || [];
       ocorrencias.push(novaOcorrencia);

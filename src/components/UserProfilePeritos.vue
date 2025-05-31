@@ -52,10 +52,27 @@ export default {
   },
   methods: {
     loadProfile() {
-      // Carregar os dados do localStorage
-      const savedProfile = localStorage.getItem('profileP');
-      if (savedProfile) {
-        this.profileP = JSON.parse(savedProfile);
+      // 1. Vai buscar o email do utilizador autenticado
+      const userEmail = localStorage.getItem('email');
+      if (!userEmail) return;
+
+      // 2. Vai buscar o array de peritos do localStorage
+      const peritos = JSON.parse(localStorage.getItem('profileP')) || [];
+
+      // 3. Procura o perito pelo email
+      const perito = peritos.find(p => p.email === userEmail);
+
+      // 4. Se encontrar, preenche o perfil
+      if (perito) {
+        this.profileP = {
+          name: perito.name || '',
+          dob: perito.dob || '',
+          specialty: perito.speciality || '', // Atenção ao nome do campo!
+          location: perito.location || '',
+          phone: perito.phone || '',
+          email: perito.email || '',
+          address: perito.address || '',
+        };
       }
     },
     logout() {
