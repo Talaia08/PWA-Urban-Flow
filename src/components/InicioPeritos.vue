@@ -100,21 +100,26 @@ export default {
   mounted() {
     const auditorias = JSON.parse(localStorage.getItem('auditorias')) || [];
     const userEmail = localStorage.getItem('email');
+    const peritos = JSON.parse(localStorage.getItem('profileP')) || [];
+    // Vai buscar o nome do perito autenticado
+    let nomePerito = '';
+    if (Array.isArray(peritos)) {
+      const perito = peritos.find(p => p.email === userEmail);
+      nomePerito = perito ? perito.name : '';
+    } else if (peritos && peritos.email === userEmail) {
+      nomePerito = peritos.name;
+    }
 
-    // Suporta todos os formatos de profileP
     this.ocorrencias = auditorias
       .filter(a => {
         if (!a.profileP) return false;
-        // Se for string (email)
-        if (typeof a.profileP === 'string') return a.profileP === userEmail;
-        // Se for objeto único
-        if (typeof a.profileP === 'object' && !Array.isArray(a.profileP)) return a.profileP.email === userEmail;
-        // Se for array
-        if (Array.isArray(a.profileP)) {
-          // Array de strings
-          if (typeof a.profileP[0] === 'string') return a.profileP.includes(userEmail);
-          // Array de objetos
-          if (typeof a.profileP[0] === 'object') return a.profileP.some(p => p.email === userEmail);
+        // Se for string (nome)
+        if (typeof a.profileP === 'string') return a.profileP === nomePerito || a.profileP === userEmail;
+        // Se for array de nomes
+        if (Array.isArray(a.profileP)) return a.profileP.includes(nomePerito) || a.profileP.includes(userEmail);
+        // Se for objeto
+        if (typeof a.profileP === 'object' && !Array.isArray(a.profileP)) {
+          return a.profileP.email === userEmail || a.profileP.name === nomePerito;
         }
         return false;
       })
@@ -123,10 +128,12 @@ export default {
         estadoOcorrencia: auditoria.estadoOcorrencia || 'Por Resolver',
         descricao: auditoria.descricao,
         dataHora: auditoria.dataHora,
-        id: auditoria.idOcorrencia // para manter compatibilidade com o resto do código
+        id: auditoria.idOcorrencia
       }));
 
-    const userInfo = JSON.parse(localStorage.getItem('profileP'));
+    const userInfo = Array.isArray(peritos)
+      ? peritos.find(p => p.email === userEmail)
+      : peritos;
     if (userInfo && userInfo.name) {
       this.profileP = userInfo;
     }
